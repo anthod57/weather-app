@@ -4,6 +4,7 @@
     display: flex;
     align-items: center;
     justify-content: center;
+    background: rgba(0,121,255,1);
 
     &.hot {
         background: rgb(255,255,255);
@@ -11,8 +12,8 @@
     }
 
     &.cold {
-        background: rgb(134,134,134);
-        background: linear-gradient(166deg, #222222 0%, #0053aa 100%);
+        background: #949494;
+        background: linear-gradient(166deg, #ffffff 0%, #3b6c9f 100%);
     }
 
     .wrapper {
@@ -74,6 +75,31 @@
             font-size: 1.5em;
             text-transform: uppercase;
             font-weight: 500;
+        }
+
+        .weather-icon {
+            font-size: 3em;
+            margin: 0.5em;
+
+            .fa-sun {
+                color: yellow;
+            }
+
+            .fa-cloud {
+                color: gray;
+            }
+
+            .fa-cloud-showers-heavy {
+                color: #36a0ff;
+            }
+
+            .fa-snowflake {
+                color: white;
+            }
+
+            .fa-cloud-bolt {
+                color: lightsteelblue;
+            }
         }
     }
 }

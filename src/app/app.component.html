@@ -1,5 +1,5 @@
 <main>
-  <div class="container hot">
+  <div class="container" [ngClass]="{'hot': cityData.weatherData.hourly.temperature_2m[cityData.weatherData.hourly.temperature_2m.length - 1] >= 15, 'cold': cityData.weatherData.hourly.temperature_2m[cityData.weatherData.hourly.temperature_2m.length - 1] < 15}">
     <div class="wrapper">
       <div class="header">
         <input (keyup)="onKeyUp($event)" type="text" name="city" placeholder="City"/>
@@ -9,7 +9,17 @@
         <span *ngIf="error">{{errorText}}</span>
       </div>
       <div class="hero">
-        <h1>{{city}}</h1>
+        <h1 *ngIf="cityData">{{cityData.name}}, {{cityData.country_code}}</h1>
+
+        <h2 *ngIf="cityData.weatherData.hourly.temperature_2m">
+          <!-- LAST HOURLY TEMPERATURE RECORD WITH UNIT SUFFIX -->
+          {{cityData.weatherData.currentTemperature}}{{cityData.weatherData.hourly_units.temperature_2m}} 
+        </h2>
+
+        <!-- ICON BASED ON WEATHER CODE (https://open-meteo.com/en/docs#api_form -> WMO) -->
+        <div class="weather-icon">
+          <i (click)="onClick()" [ngClass]="getWeatherIcon(cityData.weatherData.currentWeatherCode)"></i>
+        </div>
       </div>
     </div>
   </div>
