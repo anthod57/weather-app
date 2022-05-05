@@ -1,4 +1,5 @@
 <main>
+  <!-- Change background based on temperature: Hot if >= 15°C, Cold if < 15°C -->
   <div class="container" [ngClass]="{'hot': cityData.weatherData.hourly.temperature_2m[cityData.weatherData.hourly.temperature_2m.length - 1] >= 15, 'cold': cityData.weatherData.hourly.temperature_2m[cityData.weatherData.hourly.temperature_2m.length - 1] < 15}">
     <div class="wrapper">
       <div class="header">

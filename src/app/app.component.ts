@@ -13,6 +13,7 @@ export class AppComponent {
   errorText: string;
   cityData: any;
 
+  // Weather codes from https://open-meteo.com/en/docs#api_form
   sunnyWeatherCode = [0, 1, 2, 3];
   rainyWeatherCode = [61, 63, 65, 66, 67, 80, 81, 82];
   snowyWeatherCode = [71, 73, 75, 77, 85, 86];
@@ -31,6 +32,7 @@ export class AppComponent {
   }
 
   getData() {
+    // Get city latitude and longitude required for weather API call
     fetch(`https://geocoding-api.open-meteo.com/v1/search?name=${this.searchInput}`).then(response => response.json()).then(data => {
       console.log(data);
       if (!data.results) {
@@ -38,17 +40,28 @@ export class AppComponent {
         this.errorText = "City not found.";
       } else {
         this.cityData = data.results[0];
+
+        // Fetch weather data
         fetch(`https://api.open-meteo.com/v1/forecast?latitude=${this.cityData.latitude}&longitude=${this.cityData.longitude}&hourly=temperature_2m,relativehumidity_2m,weathercode&daily=temperature_2m_max,temperature_2m_min&timezone=${this.cityData.timezone}`)
           .then(response => response.json()).then(data => {
             this.cityData.weatherData = data;
-            this.cityData.weatherData.currentTemperature = data.hourly.temperature_2m[data.hourly.temperature_2m.length - 1];
-            this.cityData.weatherData.currentWeatherCode = data.hourly.weathercode[data.hourly.weathercode.length - 1];
-            console.log(this.cityData)
+
+            // Convert dates from the API server to locale time string
+            let dateArray: [string] = this.cityData.weatherData.hourly.time.map((date: string) => new Date(date).toLocaleString());
+
+            // Convert NOW to match the API server date format
+            let now = new Date(Date.now());
+            let currentHour = new Date(now.getFullYear(), now.getMonth(), now.getDate(), now.getHours());
+        
+            let currentHourIndex = dateArray.findIndex(x => x === currentHour.toLocaleString());
+
+            this.cityData.weatherData.currentTemperature = data.hourly.temperature_2m[currentHourIndex];
+            this.cityData.weatherData.currentWeatherCode = data.hourly.weathercode[currentHourIndex];
           });
       }
     }).catch((error) => {
       this.error = true;
-      this.errorText = error;
+      this.errorText = error.toString();
     })
   }
 
@@ -71,6 +84,7 @@ export class AppComponent {
       return "fa-solid fa-cloud-bolt";
     }
 
+    // If weather code doesn't match any codes above
     return "fa-solid fa-cloud";
   }
 }
