@@ -74,6 +74,8 @@ export class AppComponent {
   }
 
   getWeatherIcon(code : number) : string {
+    if(!code) return "";
+
     if(this.sunnyWeatherCode.includes(code)){
       return "fa-solid fa-sun";
     }else if (this.rainyWeatherCode.includes(code)){
