@@ -34,7 +34,6 @@ export class AppComponent {
   getData() {
     // Get city latitude and longitude required for weather API call
     fetch(`https://geocoding-api.open-meteo.com/v1/search?name=${this.searchInput}`).then(response => response.json()).then(data => {
-      console.log(data);
       if (!data.results) {
         this.error = true;
         this.errorText = "City not found.";
@@ -45,7 +44,6 @@ export class AppComponent {
         fetch(`https://api.open-meteo.com/v1/forecast?latitude=${this.cityData.latitude}&longitude=${this.cityData.longitude}&hourly=temperature_2m,relativehumidity_2m,weathercode&daily=temperature_2m_max,temperature_2m_min&timezone=${this.cityData.timezone}`)
           .then(response => response.json()).then(data => {
             this.cityData.weatherData = data;
-
             // Convert dates from the API server to locale time string
             let dateArray: [string] = this.cityData.weatherData.hourly.time.map((date: string) => new Date(date).toLocaleString());
 
@@ -57,6 +55,8 @@ export class AppComponent {
 
             this.cityData.weatherData.currentTemperature = data.hourly.temperature_2m[currentHourIndex];
             this.cityData.weatherData.currentWeatherCode = data.hourly.weathercode[currentHourIndex];
+
+            console.log(this.cityData);
           });
       }
     }).catch((error) => {
@@ -74,7 +74,7 @@ export class AppComponent {
   }
 
   getWeatherIcon(code : number) : string {
-    if(!code) return "";
+    if(code === null) return "";
 
     if(this.sunnyWeatherCode.includes(code)){
       return "fa-solid fa-sun";
